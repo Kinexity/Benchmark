@@ -62,23 +62,17 @@ int main() {
 	std::cin >> N;
 	std::vector<double>
 		v1, v2, v3, res;
-	std::vector<size_t>
-		indexes;
 	res.resize(N);
-	indexes.resize(N);
-	std::iota(indexes.begin(), indexes.end(), size_t());
-	for (auto i : indexes) {
+	for (auto i = 0; i < N; i++) {
 		v1.push_back(dis(gen));
 		v2.push_back(dis(gen));
 		v3.push_back(dis(gen));
 	}
 	std::cout << "Threads: " << std::thread::hardware_concurrency() << '\n';
 	tc.start();
-	//std::for_each(std::execution::par, indexes.begin(), indexes.end(), [&](size_t i) { res[i] = std::sin(std::fma(v1[i], v2[i], v3[i])); });
-	tc.stop();
-	std::cout << "Result (multicore): " << N / tc.measured_timespan().count() << "elems/s\n";
-	tc.start();
-	std::for_each(/*std::execution::seq,*/ indexes.begin(), indexes.end(), [&](size_t i) { res[i] = std::sin(std::fma(v1[i], v2[i], v3[i])); });
+	for (auto i = 0; i < N; i++) {
+		res[i] = std::sin(std::fma(v1[i], v2[i], v3[i]));
+	}
 	tc.stop();
 	std::cout << "Result (singlecore): " << N / tc.measured_timespan().count() << "elems/s\n";
 }
