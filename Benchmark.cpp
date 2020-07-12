@@ -7,6 +7,7 @@
 #include <random>
 #include <vector>
 #include <thread>
+#include <intrin.h>
 
 namespace PCL {
 	class C_Time_Counter {
@@ -71,8 +72,20 @@ int main() {
 	std::cout << "Threads: " << std::thread::hardware_concurrency() << '\n';
 	tc.start();
 	for (auto i = 0; i < N; i++) {
-		res[i] = std::sin(std::fma(v1[i], v2[i], v3[i]));
+		res[i] = std::sin(v1[i]);
 	}
+	//for (auto i = 0; i < N; i += 4) {
+	//	_mm256_store_pd(&res[i], _mm256_fmadd_pd(_mm256_load_pd(&v1[i]), _mm256_load_pd(&v2[i]), _mm256_load_pd(&v3[i])));
+	//}
 	tc.stop();
-	std::cout << "Result (singlecore): " << N / tc.measured_timespan().count() << "elems/s\n";
+	std::cout << "Result sin (SC): " << N / tc.measured_timespan().count() << "elems/s\n";
+	tc.start();
+	for (auto i = 0; i < N; i++) {
+		res[i] = std::fma(v1[i], v2[i], v3[i]);
+	}
+	//for (auto i = 0; i < N; i += 4) {
+	//	_mm256_store_pd(&res[i], _mm256_fmadd_pd(_mm256_load_pd(&v1[i]), _mm256_load_pd(&v2[i]), _mm256_load_pd(&v3[i])));
+	//}
+	tc.stop();
+	std::cout << "Result fma (SC): " << N / tc.measured_timespan().count() << "elems/s\n";
 }
