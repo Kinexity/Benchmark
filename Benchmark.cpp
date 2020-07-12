@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <chrono>
 #include <iostream>
-#include <execution>
+//#include <execution>
 #include <algorithm>
 #include <numeric>
 #include <random>
@@ -74,11 +74,11 @@ int main() {
 	}
 	std::cout << "Threads: " << std::thread::hardware_concurrency() << '\n';
 	tc.start();
-	std::for_each(std::execution::par, indexes.begin(), indexes.end(), [&](size_t i) { res[i] = std::sin(v1[i] * v2[i] + v3[i]); });
+	//std::for_each(std::execution::par, indexes.begin(), indexes.end(), [&](size_t i) { res[i] = std::sin(std::fma(v1[i], v2[i], v3[i])); });
 	tc.stop();
 	std::cout << "Result (multicore): " << N / tc.measured_timespan().count() << "elems/s\n";
 	tc.start();
-	std::for_each(std::execution::seq, indexes.begin(), indexes.end(), [&](size_t i) { res[i] = std::sin(v1[i] * v2[i] + v3[i]); });
+	std::for_each(/*std::execution::seq,*/ indexes.begin(), indexes.end(), [&](size_t i) { res[i] = std::sin(std::fma(v1[i], v2[i], v3[i])); });
 	tc.stop();
 	std::cout << "Result (singlecore): " << N / tc.measured_timespan().count() << "elems/s\n";
 }
